@@ -2,5 +2,6 @@
 
 [使用說明(巴哈姆特)](https://forum.gamer.com.tw/Co.php?bsn=12980&sn=426585)
 
-網站部份以[chat-room](https://github.com/twtrubiks/chat-room)為基礎做修改
+網站部份以[chat-room](https://github.com/twtrubiks/chat-room)為基礎修改而成
 
+![alt tag](https://i.imgur.com/5KbbDcd.png)
