@@ -177,7 +177,7 @@ $(document).ready(function() {
                         //console.log("MATCHED!");
                     }
                 }
-                /* No domain name no ssl certificate, no ssl certificate no notification API
+                //No domain name no ssl certificate, no ssl certificate no notification API
                 keywords.forEach(function(keyword, index){
                     console.log('keyword=' + keyword);
                     if(newmsg.indexOf(keyword) != -1 && doloop) {
@@ -201,7 +201,7 @@ $(document).ready(function() {
                     else{
                         //console.log("NO");
                     }
-                });*/
+                });
             }
 
             $('<div class="message new">' + playername + '：' + newmsg + '</div>').appendTo($('.mCSB_container')).addClass('new');
