@@ -132,7 +132,6 @@ $(document).ready(function() {
             var blacklist = false;
             var keyword_matched = [0,0,0,0,0,0,0,0];
             var Notufy_emit = false;
-
             for(var i=0; i<word_filter.length; i++) {
                 if(playername.indexOf(word_filter[i]) != -1) {
                     playername = "";
@@ -177,7 +176,7 @@ $(document).ready(function() {
                         //console.log("MATCHED!");
                         if (Notification.permission === 'granted') {
                             var notifyConfig = {
-                                body: newmsg+" matched "+keyword, 
+                                body: newmsg, 
                                 //icon: '/images/favicon.ico', 
                             };
                             var notification = new Notification("關鍵字出現!!", notifyConfig);
