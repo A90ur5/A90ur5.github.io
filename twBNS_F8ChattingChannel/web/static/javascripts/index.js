@@ -184,6 +184,7 @@ $(document).ready(function() {
                             notification.onclick = function(e) {
                                 e.preventDefault(); // prevent the browser from focusing the Notification's tab
                             }
+                        }
                     }
                 }
                 /*No domain name no ssl certificate, no ssl certificate no notification API
