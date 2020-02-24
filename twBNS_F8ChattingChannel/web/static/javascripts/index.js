@@ -108,7 +108,7 @@ $(document).ready(function() {
 
         var namespace = '';
         //var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
-        var socket = io.connect('http://bnsf8.ddns.net/');
+        var socket = io.connect('https://f8.twbns.cf/');
         socket.on('connect', function () {
             //console.log('connected!');
             socket.emit('join', {room: 'A_Room'});
