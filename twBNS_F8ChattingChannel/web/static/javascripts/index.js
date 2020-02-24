@@ -175,9 +175,18 @@ $(document).ready(function() {
                         newmsg = '<font color="red"><b>'+ newmsg + '</b></font>';
                         notify_mid.play();
                         //console.log("MATCHED!");
+                        if (Notification.permission === 'granted') {
+                            var notifyConfig = {
+                                body: newmsg+" matched "+keyword, 
+                                //icon: '/images/favicon.ico', 
+                            };
+                            var notification = new Notification("關鍵字出現!!", notifyConfig);
+                            notification.onclick = function(e) {
+                                e.preventDefault(); // prevent the browser from focusing the Notification's tab
+                            }
                     }
                 }
-                //No domain name no ssl certificate, no ssl certificate no notification API
+                /*No domain name no ssl certificate, no ssl certificate no notification API
                 keywords.forEach(function(keyword, index){
                     console.log('keyword=' + keyword);
                     if(newmsg.indexOf(keyword) != -1 && doloop) {
@@ -201,7 +210,7 @@ $(document).ready(function() {
                     else{
                         //console.log("NO");
                     }
-                });
+                });*/
             }
 
             $('<div class="message new">' + playername + '：' + newmsg + '</div>').appendTo($('.mCSB_container')).addClass('new');
