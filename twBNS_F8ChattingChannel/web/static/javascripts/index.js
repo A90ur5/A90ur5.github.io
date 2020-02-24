@@ -171,7 +171,6 @@ $(document).ready(function() {
                         }
                     }
                     if(Notufy_emit) {
-                        newmsg = '<font color="red"><b>'+ newmsg + '</b></font>';
                         notify_mid.play();
                         //console.log("MATCHED!");
                         if (Notification.permission === 'granted') {
@@ -184,6 +183,7 @@ $(document).ready(function() {
                                 e.preventDefault(); // prevent the browser from focusing the Notification's tab
                             }
                         }
+                        newmsg = '<font color="red"><b>'+ newmsg + '</b></font>';
                     }
                 }
                 /*No domain name no ssl certificate, no ssl certificate no notification API
