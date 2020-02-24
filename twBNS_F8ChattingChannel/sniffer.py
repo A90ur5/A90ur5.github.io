@@ -66,7 +66,8 @@ if __name__ == '__main__':
     word_filter = ['<', '>', '\\', '/', ',', '.']
     replace_list = ['＜','＞','＼','／', '，', '‧']
     pc = pcap.pcap('ens33')
-    filter = "(src host 203.70.17.33 or src host 203.70.17.34) and (dst host " + sniff_IP[0] + " or dst host " + sniff_IP[1] + ")"
+    #filter = "(src host 203.70.17.33 or src host 203.70.17.34) and (dst host " + sniff_IP[0] + " or dst host " + sniff_IP[1] + ")"
+    filter = "src host 203.70.17.33 or src host 203.70.17.34"
     pc.setfilter(filter)
     pattern = re.compile(".+:[0-9]:[0-9]:(.*?):[0-9]:.+")
     lastcontent = ""
@@ -93,7 +94,7 @@ if __name__ == '__main__':
         tcp = packet.data
         data = tcp.data
         if len(data) == 0:
-            print "heartbeat"
+            #print "heartbeat"
             lastcontent = ""
             continue
 
@@ -106,7 +107,6 @@ if __name__ == '__main__':
         for i in range(startpos, len(data), 2):
             try:
                 currnetData = '\u' + binascii.hexlify(data[i+1]) + binascii.hexlify(data[i])
-                #print currnetData.decode('unicode-escape')
 
             except IndexError:
                 print "Unknown package, Skip"
@@ -121,7 +121,6 @@ if __name__ == '__main__':
         try:
             stageBData = stageAData.decode('unicode-escape', errors='ignore').encode('utf-8')
             print stageBData
-            #print "start pos sucess: " + str(startpos)
         except UnicodeDecodeError:
             print "UnicodeDecodeError"
             continue
