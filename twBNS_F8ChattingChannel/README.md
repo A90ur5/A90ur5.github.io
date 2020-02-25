@@ -4,13 +4,12 @@
 
 網站部份以[chat-room](https://github.com/twtrubiks/chat-room)為基礎修改而成
 
-
 # 架構
 
 ![alt tag](https://i.imgur.com/nebdFa3.jpg)
 
-
-
+# 通知音效
+[MotionElements](https://www.motionelements.com/zh-hant/free/sound-effects)免費素材庫
 
 
 ![alt tag](https://i.imgur.com/5KbbDcd.png)
