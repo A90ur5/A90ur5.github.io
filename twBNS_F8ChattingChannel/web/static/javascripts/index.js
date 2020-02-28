@@ -36,9 +36,7 @@ $(document).ready(function() {
     var index = 0;
     $(StartButton).attr('disabled', false);
     $(StopButton).attr('disabled', true);
-    $(ChechaliveButton).click(function (e) {
-        socket.emit('alivecheck', "");
-    });
+
     $(StartButton).click(function (e) {
 
         $("input:text").each(
@@ -104,6 +102,15 @@ $(document).ready(function() {
             //console.log('connected!');
             socket.emit('join', {room: 'A_Room'});
         });
+        
+        $(ChechaliveButton).click(function (e) {
+            socket.emit('alivecheck', "");
+        });
+        socket.on('getStatus', function (msg) {
+            var timeA = msg.accountA;
+            var timeB = msg.accountB;
+            alert("觀察者帳號A上次回報時間：" + timeA + "\n" + "觀察者帳號B上次回報時間：" + timeB);
+        });
 
         function updateScrollbar() {
             $messages.mCustomScrollbar("update").mCustomScrollbar('scrollTo', 'bottom', {
@@ -116,11 +123,6 @@ $(document).ready(function() {
             $('<div class="timestamp">' + time + '</div>').appendTo($('.message:last'));
         }
 
-        socket.on('getStatus', function (msg) {
-            var timeA = msg.accountA;
-            var timeB = msg.accountB;
-            alert("觀察者帳號A上次回報時間：" + timeA + "\n" + "觀察者帳號B上次回報時間：" + timeB);
-        });
 
         socket.on('getInquiry', function (msg) {
             //console.log("125 index: " + index)
