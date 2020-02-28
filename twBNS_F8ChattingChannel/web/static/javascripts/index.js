@@ -98,18 +98,23 @@ $(document).ready(function() {
         var namespace = '';
         //var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
         var socket = io.connect('https://f8socket.twbns.cf/');
+        var _alert = false;
         socket.on('connect', function () {
             //console.log('connected!');
             socket.emit('join', {room: 'A_Room'});
         });
-        
+
         $(ChechaliveButton).click(function (e) {
             socket.emit('alivecheck', "");
+            _alert = true;
         });
         socket.on('getStatus', function (msg) {
             var timeA = msg.accountA;
             var timeB = msg.accountB;
-            alert("觀察者帳號A上次回報時間：" + timeA + "\n" + "觀察者帳號B上次回報時間：" + timeB);
+            if(_alert) {
+                alert("觀察者帳號A上次回報時間：" + timeA + "\n" + "觀察者帳號B上次回報時間：" + timeB);
+                _alert = false;
+            }
         });
 
         function updateScrollbar() {
