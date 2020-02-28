@@ -15,8 +15,8 @@ from Crypto.PublicKey import RSA
 from Crypto.Hash import SHA256
 
 
-tag_begining = ["<party-chatrecruit", "<link id='item-name:" , "<link id='damage-meter:", "<guild-member", "<atl"]
-tag_replace = ["", "「無法辯識的物品ID」", "「戰鬥記錄」", "", ""]
+tag_begining = ["<party-chatrecruit", "<link id='item-name:" , "<link id='damage-meter:", "<guild-member", "<atl", "<link id='achievement:"]
+tag_replace = ["", "「無法辯識的物品ID」", "「戰鬥記錄」", "", "", "「無法辯識的成就ID」"]
 dungeonID = ["SeaCave", "SuJangKo", "GwiMyeonGeukDan", "DistrotedCastle"]
 dungeonNameCHT = ["回聲水中洞", "南天藏寶庫", "鬼面劇團", "扭曲的天舞宮"]
 tag_ending = "'/>"
@@ -24,6 +24,35 @@ dungeonTag = "<link id='dungeon:Dungeon_"
 linkTag = ["<link id='arena-dungeonInvite:", ".0'/>"]
 lenOfDungeonTag = len(dungeonTag)
 sniff_IP = ["192.168.225.131", "192.168.225.133"]
+with open('connection-private.pem', 'r') as f:
+    key = f.read()
+rsakey = RSA.importKey(key)
+
+def pushdata(playerName, speakingContent, ip_dst):
+    #RSA signature
+    signer = Signature_pkcs1_v1_5.new(rsakey)
+    digest = SHA256.new()
+    digest.update(playerName + speakingContent)
+    sign = signer.sign(digest)  
+    
+    #url = "http://104.199.232.117/pushdataWRYYYYYYYYYYYYYYY?msg=" + base64.b32encode(speakingContent) + "&player=" + base64.b32encode(playerName) + "&sign=" + base64.b32encode(sign)
+    url = "http://104.199.232.117/pushdataWRYYYYYYYYYYYYYYY"
+    #test_url = "http://127.0.0.1/pushdataWRYYYYYYYYYYYYYYY"
+    post_data = {
+        "msg" : base64.b32encode(speakingContent),
+        "player" : base64.b32encode(playerName),
+        "src" : account_index.index(ip_dst),
+        "sign" : base64.b32encode(sign)
+    }
+    print(playerName + " : " + speakingContent)
+
+    try:
+        #r = s.get(url, timeout=5)
+        r = s.post(url, data=post_data, timeout=5)
+        #r = s.post(test_url, data=post_data, timeout=5)
+    except requests.exceptions.ConnectionError:
+        print("Connection Error")
+    return 0
 
 def tag_filter(speakingContent):
     for i in range(len(tag_begining)):
@@ -72,14 +101,12 @@ if __name__ == '__main__':
     pattern = re.compile(".+:[0-9]:[0-9]:(.*?):[0-9]:.+")
     lastcontent = ""
     s = requests.Session()
-
-    with open('connection-private.pem', 'r') as f:
-        key = f.read()
-    rsakey = RSA.importKey(key)
+    account_monitor = {}
+    global account_index
+    account_index = []
 
     for ptime,pdata in pc:
         _skip = False
-        #print ptime,pdata
         eth = dpkt.ethernet.Ethernet(pdata)
         if not isinstance(eth.data, dpkt.ip.IP):
             print 'Non IP Packet type %s\n' % eth.data.__class__.__name__
@@ -90,12 +117,26 @@ if __name__ == '__main__':
         offset = packet.off & dpkt.ip.IP_OFFMASK
         output1 = {'time':time.strftime("%Y-%m-%d %H:%M:%S", (time.localtime(ptime)))}
         ip_dst = socket.inet_ntoa(packet.dst)
-        print(ip_dst)
         tcp = packet.data
         data = tcp.data
+
+        #print(ip_dst)
+        if ip_dst in account_monitor:
+            account_monitor[ip_dst]+=1
+            print(account_monitor[ip_dst])
+        else:
+            account_monitor.update({ip_dst:1})
+            account_index = account_monitor.keys() #python2
+            #account_index = list(account_monitor.keys()) #python3
+            print(account_index)
+
+
         if len(data) == 0:
             #print "heartbeat"
             lastcontent = ""
+            if account_monitor[ip_dst] == 20:
+                pushdata("@KONODIODA", "", ip_dst)
+                account_monitor[ip_dst] = 0
             continue
 
         print output1
@@ -157,17 +198,5 @@ if __name__ == '__main__':
         else:
             lastcontent = speakingContent
 
-        #RSA signature
-        signer = Signature_pkcs1_v1_5.new(rsakey)
-        digest = SHA256.new()
-        digest.update(playerName + speakingContent)
-        sign = signer.sign(digest)  
-        
-        url = "http://104.199.232.117/pushdataWRYYYYYYYYYYYYYYY?msg=" + base64.b32encode(speakingContent) + "&player=" + base64.b32encode(playerName) + "&sign=" + base64.b32encode(sign)
-        #test_url = "http://127.0.0.1/pushdataWRYYYYYYYYYYYYYYY?msg=" + base64.b32encode(speakingContent) + "&player=" + base64.b32encode(playerName) + "&sign=" + base64.b32encode(sign)
-        try:
-            r = s.get(url, timeout=5)
-            #r = s.get(test_url, timeout=5)
-        except requests.exceptions.ConnectionError:
-            print("Connection Error")
-            continue
+        pushdata(playerName, speakingContent, ip_dst)
+        account_monitor[ip_dst] = 0

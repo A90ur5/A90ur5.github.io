@@ -28,9 +28,10 @@ def to_json(func):
     return wrapper
 
 @app.route('/')
-@app.route('/index', methods=['GET'])
+@app.route('/index')
 def index():
-    return render_template("index.html", **locals())
+    return redirect("https://a90ur5.github.io/twBNS_F8ChattingChannel/web/index.html")
+    #return render_template("index.html", **locals())
 
 @socketio.on('join')
 def join(message):
@@ -64,13 +65,22 @@ def send_inquiry(msg):
     }
     emit('getInquiry', data, room=msg['room'])
 '''
-@app.route('/pushdataWRYYYYYYYYYYYYYYY', methods=['GET'])
+@socketio.on('alivecheck')
+def aliveCheck(x):
+    data = {
+        'accountA': alive_check[0],
+        'accountB': alive_check[1]
+    }
+    socketio.emit('getStatus', data)
+
+
+@app.route('/pushdataWRYYYYYYYYYYYYYYY', methods=['POST'])
 def pushingData():
     create_date = datetime.now()
-    b32_data = request.args.get('msg')
-    b32_player = request.args.get('player')
-    b32_sign = request.args.get('sign')
-
+    b32_data = request.form.get('msg')
+    b32_player = request.form.get('player')
+    b32_sign = request.form.get('sign')
+    src = request.form.get('src')
     try:
         pushing_player = base64.b32decode(b32_player)
         pushing_data = base64.b32decode(b32_data)
@@ -84,20 +94,30 @@ def pushingData():
     digest = SHA256.new()
     digest.update(pushing_player+pushing_data)
     is_verify = verifier.verify(digest, sign)
-    if not is_verify:
+
+    if is_verify:
+        try:
+            alive_check[int(src)] = create_date.strftime('%Y-%m-%d %H:%M:%S')
+            if pushing_player.decode('utf-8') == "@KONODIODA":
+                print("Heartbeat from source:" + src + " at " + alive_check[int(src)])
+                return ''
+
+            else:
+                data = {
+                    'time': create_date.strftime('%H:%M'),
+                    'msg': pushing_data.decode('utf-8'),
+                    'player' : pushing_player.decode('utf-8'),
+                }
+                socketio.emit('getInquiry', data, room='A_Room')
+                
+        except UnicodeDecodeError:
+            print("UnicodeDecodeError")
+
+    else:
         print("signature error, drop the message")
         print("player: " + pushing_player.decode('utf-8'))
         print("message: " + pushing_data.decode('utf-8'))
-    else:
-        try:
-            data = {
-                'time': create_date.strftime('%H:%M'),
-                'msg': pushing_data.decode('utf-8'),
-                'player' : pushing_player.decode('utf-8'),
-            }
-            socketio.emit('getInquiry', data, room='A_Room')
-        except UnicodeDecodeError:
-            print("UnicodeDecodeError")
+
     return ''
 
 
@@ -106,4 +126,5 @@ if __name__ == '__main__':
     with open('../connection-public.pem', 'r') as f:
         key = f.read()
     rsakey = RSA.importKey(key)
+    alive_check = ["", ""]
     socketio.run(app, host='0.0.0.0', port = 80)

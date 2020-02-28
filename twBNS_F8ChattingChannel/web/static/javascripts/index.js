@@ -1,12 +1,12 @@
 $(document).ready(function() {
-    console.log('hello world');
+    //console.log('hello world');
     if (!('Notification' in window)) {
-        console.log('This browser does not support notification');
+        //console.log('This browser does not support notification');
     }
     else if (Notification.permission === 'default' || Notification.permission === 'undefined') {
       Notification.requestPermission(function(permission) {
-        console.log('This browser does support notification');
-        console.log(Notification.permission);
+        //console.log('This browser does support notification');
+        //console.log(Notification.permission);
 
       });
     }
@@ -19,6 +19,7 @@ $(document).ready(function() {
     var AddButton    = $("#AddMoreFileBox"); //Add button ID
     var StartButton = $("#Start")
     var StopButton = $('#Stop')
+    var ChechaliveButton = $('#Checkalive')
     var MaxKeywordGroups = 8;
     var x = InputsWrapper.length; //initlal text box count
     var FieldCount=1; //to keep track of text box added
@@ -46,12 +47,9 @@ $(document).ready(function() {
         $(StopButton).attr('disabled', false);
         doNotify = true;
         var groupofword = 0;
-        //var prefix = false;
         for(var i=0; i<index; i++) {
-            //console.log(input_keywords[i]);
             if(input_keywords[i][0]=='@' && input_keywords[i][1] == '_') {
                 var num = parseInt(input_keywords[i][2]);
-                //prefix = true;
                 keywords[i][0] = input_keywords[i].substring(3, input_keywords[i].length);
                 if(num > MaxKeywordGroups || num < 0) {
                     groupofword = 0;
@@ -61,18 +59,9 @@ $(document).ready(function() {
                 }
             }
             else {
-                //prefix = false;
                 groupofword = 0;
                 keywords[i][0] = input_keywords[i];
             }
-            /*
-            if(prefix) {
-                keywords[i][0] = input_keywords[i].substring(3, input_keywords[i].length);
-            }
-            else{
-                keywords[i][0] = input_keywords[i];
-            }
-            */
             keywords[i][1] = groupofword;
             keyword_groups[groupofword]++;
         }
@@ -124,6 +113,16 @@ $(document).ready(function() {
         function setDate(time) {
             $('<div class="timestamp">' + time + '</div>').appendTo($('.message:last'));
         }
+
+        $(ChechaliveButton).click(function (e) {
+            socket.emit('alivecheck', "");
+        });
+
+        socket.on('getStatus', function (msg) {
+            var timeA = msg.accountA;
+            var timeB = msg.accountB;
+            alert("觀察者帳號A上次回報時間：" + timeA + "\n" + "觀察者帳號B上次回報時間：" + timeB);
+        });
 
         socket.on('getInquiry', function (msg) {
             //console.log("125 index: " + index)
@@ -178,7 +177,7 @@ $(document).ready(function() {
                                 body: newmsg, 
                                 //icon: '/images/favicon.ico', 
                             };
-                            var notification = new Notification("關鍵字出現!!", notifyConfig);
+                            var notification = new Notification("關鍵詞出現!!", notifyConfig);
                             notification.onclick = function(e) {
                                 e.preventDefault(); // prevent the browser from focusing the Notification's tab
                             }
@@ -186,31 +185,6 @@ $(document).ready(function() {
                         newmsg = '<font color="red"><b>'+ newmsg + '</b></font>';
                     }
                 }
-                /*No domain name no ssl certificate, no ssl certificate no notification API
-                keywords.forEach(function(keyword, index){
-                    console.log('keyword=' + keyword);
-                    if(newmsg.indexOf(keyword) != -1 && doloop) {
-                        //console.log("MATCHED!");
-
-                        if (Notification.permission === 'granted') {
-                            var notifyConfig = {
-                                body: newmsg+" matched "+keyword, 
-                                //icon: '/images/favicon.ico', 
-                            };
-                            var notification = new Notification("關鍵字出現!!", notifyConfig);
-                            notification.onclick = function(e) {
-                                e.preventDefault(); // prevent the browser from focusing the Notification's tab
-                            }
-                        }
-
-                        //alert("關鍵字出現!! " + newmsg);
-
-                        doloop = false;
-                    }
-                    else{
-                        //console.log("NO");
-                    }
-                });*/
             }
 
             $('<div class="message new">' + playername + '：' + newmsg + '</div>').appendTo($('.mCSB_container')).addClass('new');
