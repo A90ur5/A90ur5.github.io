@@ -123,7 +123,7 @@ if __name__ == '__main__':
         #print(ip_dst)
         if ip_dst in account_monitor:
             account_monitor[ip_dst]+=1
-            print(account_monitor[ip_dst])
+            #print(account_monitor[ip_dst])
         else:
             account_monitor.update({ip_dst:1})
             account_index = account_monitor.keys() #python2

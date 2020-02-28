@@ -36,7 +36,9 @@ $(document).ready(function() {
     var index = 0;
     $(StartButton).attr('disabled', false);
     $(StopButton).attr('disabled', true);
-    
+    $(ChechaliveButton).click(function (e) {
+        socket.emit('alivecheck', "");
+    });
     $(StartButton).click(function (e) {
 
         $("input:text").each(
@@ -113,10 +115,6 @@ $(document).ready(function() {
         function setDate(time) {
             $('<div class="timestamp">' + time + '</div>').appendTo($('.message:last'));
         }
-
-        $(ChechaliveButton).click(function (e) {
-            socket.emit('alivecheck', "");
-        });
 
         socket.on('getStatus', function (msg) {
             var timeA = msg.accountA;
