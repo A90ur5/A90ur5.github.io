@@ -17,19 +17,18 @@
     <div class="chat">
 	  <div class="messages">
 		<div class="messages-content">
-          <div class="message new">觀測帳號斷線時將不會自動更新。因目前遊戲啟動為手動進行，在斷線頻繁發生的時候可能會暫時停止轉送區域頻。<div class="timestamp">00:00</div></div>
+          <!--<div class="message new">觀測帳號斷線時將不會自動更新。因目前遊戲啟動為手動進行，在斷線頻繁發生的時候可能會暫時停止轉送區域頻。<div class="timestamp">00:00</div></div>-->
+          <div class="message new">小妹要上成功嶺惹。3/5後一旦觀察者帳號斷線，將暫時停止轉發區域頻直到3/18。<div class="timestamp">00:00</div></div>
         </div>
 	  </div>
   </div>
   <div class="message-box">
     <div id="InputsWrapper">
-      <div class="mybutton2">
-      <input type="button" id="Checkalive" value="觀察者帳號存活狀態" />
-      </div>
       <div class="mybutton">
       <input type="button" id="AddMoreFileBox" value="新增關鍵詞" />
       <input type="button" id="Start" value="START"/>
       <input type="button" id="Stop" value="STOP"/>
+      <input type="button" id="Checkalive" value="觀察者帳號存活狀態" />
       </div>
       <div><input type="text" name="mytext[]" id="field_1" value="Text 1"/><input type='button' value='刪除' class="removeclass"></div>
       </div>
@@ -40,6 +39,5 @@
     <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.2/socket.io.min.js'></script>
     <script src="static/javascripts/bootstrap.min.js"></script>
 	<script src="static/javascripts/index.js"></script>
-    <!-- <script src="{{ url_for('fronttest/static', filename='javascripts/picture.js') }}"></script> -->
   </body>
 </html>
