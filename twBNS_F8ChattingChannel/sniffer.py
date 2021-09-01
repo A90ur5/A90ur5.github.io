@@ -96,7 +96,7 @@ if __name__ == '__main__':
     replace_list = ['＜','＞','＼','／', '，', '‧']
     pc = pcap.pcap('ens33')
     #filter = "(src host 203.70.17.33 or src host 203.70.17.34) and (dst host " + sniff_IP[0] + " or dst host " + sniff_IP[1] + ")"
-    filter = "src host 203.70.17.33 or src host 203.70.17.34"
+    filter = "src host 210.242.123.1"
     pc.setfilter(filter)
     pattern = re.compile(".+:[0-9]:[0-9]:(.*?):[0-9]:.+")
     lastcontent = ""
