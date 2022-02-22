@@ -97,7 +97,7 @@ $(document).ready(function() {
 
         var namespace = '';
         //var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
-        var socket = io.connect('https://f8socket.twbns.cf/');
+        var socket = io.connect('https://f8socket.bnstw.cf/');
         var _alert = false;
         socket.on('connect', function () {
             //console.log('connected!');
